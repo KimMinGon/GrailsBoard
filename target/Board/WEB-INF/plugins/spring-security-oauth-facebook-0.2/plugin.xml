@@ -1,0 +1,13 @@
+<plugin name='spring-security-oauth-facebook' version='0.2' grailsVersion='2.0 &gt; *'>
+  <author>Mihai Cazacu, Enrico Comiti, Alexey Zhokhov</author>
+  <authorEmail>donbeave@gmail.com</authorEmail>
+  <title>Facebook for Spring Security OAuth plugin</title>
+  <description>Integrate [Facebook|http://www.facebook.com] to [Spring Security OAuth plugin|http://grails.org/plugin/spring-security-oauth].
+</description>
+  <documentation>http://grails.org/plugin/spring-security-oauth-facebook</documentation>
+  <type>SpringSecurityOauthFacebookGrailsPlugin</type>
+  <resources>
+    <resource>DefaultFacebookOauthConfig</resource>
+    <resource>grails.plugin.springsecurity.oauth.FacebookSpringSecurityOAuthService</resource>
+  </resources>
+</plugin>
