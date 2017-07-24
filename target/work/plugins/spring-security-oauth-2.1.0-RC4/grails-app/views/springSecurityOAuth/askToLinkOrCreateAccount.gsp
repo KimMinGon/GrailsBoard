@@ -71,6 +71,19 @@
                 <label for='password2'><g:message code="OAuthCreateAccountCommand.password2.label" default="Password re-type"/>:</label>
                 <g:passwordField name='password2' value='${createAccountCommand?.password2}'/>
             </div>
+            <div class="fieldcontain ${hasErrors(bean: createAccountCommand, field: 'email', 'error')} ">
+                <label for='email'><g:message code="OAuthCreateAccountCommand.email.label" default="E-mail"/>:</label>
+                <g:textField name='email' value='${session.springSecurityOAuthToken?.email}' readonly="readonly"/>
+            </div>
+            <div class="fieldcontain ${hasErrors(bean: createAccountCommand, field: 'fullName', 'error')} ">
+                <label for='fullName'><g:message code="OAuthCreateAccountCommand.fullName.label" default="FullName"/>:</label>
+                <g:textField name='fullName' value='${createAccountCommand?.fullName}'/>
+            </div>
+            <div class="fieldcontain ${hasErrors(bean: createAccountCommand, field: 'nickname', 'error')} ">
+                <label for='nickname'><g:message code="OAuthCreateAccountCommand.nickname.label" default="Nickname"/>:</label>
+                <g:textField name='nickname' value='${createAccountCommand?.nickname}'/>
+            </div>
+
             <g:submitButton name="${message(code: 'springSecurity.oauth.registration.create.button', default: 'Create')}"/>
         </fieldset>
     </g:form>

@@ -51,7 +51,7 @@
 				</g:if>
 			
 			</ol>
-			<g:if test="${boardInstance.userId == user?.id}">
+			<g:if test="${boardInstance.user == user}">
 			<g:form url="[resource:boardInstance, action:'delete']" method="DELETE">
 				<fieldset class="buttons">
 					<g:link class="edit" action="edit" resource="${boardInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>

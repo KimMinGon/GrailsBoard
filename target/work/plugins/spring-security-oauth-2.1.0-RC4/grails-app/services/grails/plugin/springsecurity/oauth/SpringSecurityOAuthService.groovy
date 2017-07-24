@@ -70,6 +70,15 @@ class SpringSecurityOAuthService {
         }
     }
 
+    boolean nicknameTaken(String nickname) {
+        def User = lookupUserClass()
+        User.withNewSession { session ->
+            if (nickname && User.countByNickname(nickname)) {
+                return 'OAuthCreateAccountCommand.username.error.unique'
+            }
+        }
+    }
+
     def getAskToLinkOrCreateAccountUri() {
         def askToLinkOrCreateAccountUri = grailsApplication.config.grails.plugin.springsecurity.oauth.registration.askToLinkOrCreateAccountUri ?: '/oauth/askToLinkOrCreateAccount'
         return askToLinkOrCreateAccountUri

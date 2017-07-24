@@ -103,6 +103,7 @@ class SpringSecurityOAuthController {
                 authenticateAndRedirect(oAuthToken, getDefaultTargetUrl())
                 return
             }
+
         }
         return new ModelAndView("/springSecurityOAuth/askToLinkOrCreateAccount", [:])
     }
@@ -164,6 +165,7 @@ class SpringSecurityOAuthController {
 
     def createAccount(OAuthCreateAccountCommand command) {
         OAuthToken oAuthToken = session[SPRING_SECURITY_OAUTH_TOKEN]
+
         if (!oAuthToken) {
             log.warn "createAccount: OAuthToken not found in session"
             throw new OAuthLoginException('Authentication error')
@@ -178,10 +180,13 @@ class SpringSecurityOAuthController {
                     //User user = new User(username: command.username, password: command.password1, enabled: true)
                     user.username = command.username
                     user.password = command.password1
+                    user.email = command.email
+                    user.fullName = command.fullName
+                    user.nickname = command.nickname
                     user.enabled = true
                     user.addToOAuthIDs(provider: oAuthToken.providerName, accessToken: oAuthToken.socialId, user: user)
                     // updateUser(user, oAuthToken)
-                    if (!user.validate() || !user.save()) {
+                    if (!user.validate() || !user.save(flush: true)) {
                         status.setRollbackOnly()
                         false
                     }
@@ -189,7 +194,7 @@ class SpringSecurityOAuthController {
                     def Role = springSecurityOAuthService.lookupRoleClass()
                     def roles = springSecurityOAuthService.getRoleNames()
                     for (roleName in roles) {
-                        UserRole.create user, Role.findByAuthority(roleName)
+                        UserRole.create user, Role.findByAuthority(roleName), true
                     }
                     oAuthToken = springSecurityOAuthService.updateOAuthToken(oAuthToken, user)
                     true
@@ -228,6 +233,9 @@ class OAuthCreateAccountCommand {
     String username
     String password1
     String password2
+    String email
+    String fullName
+    String nickname
 
     static constraints = {
         username blank: false, minSize: 3, validator: { String username, command ->
@@ -250,6 +258,14 @@ class OAuthCreateAccountCommand {
         password2 nullable: true, blank: true, validator: { password2, command ->
             if (command.password1 != password2) {
                 return 'OAuthCreateAccountCommand.password.error.mismatch'
+            }
+        }
+
+        fullName blank: false, maxSize: 6
+        
+        nickname blank: false, validator: { String nickname, command ->
+            if(command.springSecurityOAuthService.nicknameTaken(nickname)) {
+                return 'nickname already existed'
             }
         }
     }

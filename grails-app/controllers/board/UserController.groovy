@@ -1,9 +1,6 @@
 package board
 
 import grails.plugin.springsecurity.annotation.Secured
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
@@ -13,22 +10,26 @@ import grails.transaction.Transactional
 class UserController {
     def userService
     def springSecurityService
+    def googleSpringSecurityOAuthService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def show() {
         def userInstance = springSecurityService.getCurrentUser()
+
         respond userInstance
-
-    }
-
-    def create() {
-        respond new User(params)
     }
 
     @Transactional
     @Secured("permitAll")
     def register(User userInstance) {
+
+        if(springSecurityService.loggedIn) {
+            notFound()
+            return
+        }
+
+
         if (userInstance == null) {
             notFound()
             return
@@ -41,7 +42,7 @@ class UserController {
         }
 
         if (userInstance.hasErrors()) {
-            respond userInstance.errors, view:'create'
+            respond userInstance.errors, view:'register'
             return
         }
 
@@ -66,6 +67,12 @@ class UserController {
 
     def edit(User userInstance) {
 
+        if(userInstance != springSecurityService.loadCurrentUser()) {
+            notFound()
+            return
+        }
+
+
         respond userInstance
     }
 
@@ -76,12 +83,17 @@ class UserController {
             return
         }
 
+        if(userInstance != springSecurityService.loadCurrentUser()) {
+            notFound()
+            return
+        }
+
         if (userInstance.hasErrors()) {
             respond userInstance.errors, view:'edit'
             return
         }
 
-        userInstance.save flush:true
+        userInstance.save flush: true, failOnError: true
 
         request.withFormat {
             form multipartForm {

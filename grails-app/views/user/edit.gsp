@@ -30,7 +30,29 @@
 			<g:form url="[resource:userInstance, action:'update']" method="PUT" >
 				<g:hiddenField name="version" value="${userInstance?.version}" />
 				<fieldset class="form">
-					<g:render template="form"/>
+					<div class="fieldcontain ${hasErrors(bean: userInstance, field: 'email', 'error')} required">
+						<label for="email">
+							<g:message code="user.email.label" default="E-mail" />
+							<span class="required-indicator">*</span>
+						</label>
+						<g:textField name="email" required="" value="${userInstance?.email}"/>
+					</div>
+
+					<div class="fieldcontain ${hasErrors(bean: userInstance, field: 'fullName', 'error')} required">
+						<label for="fullName">
+							<g:message code="user.fullName.label" default="FullName" />
+							<span class="required-indicator">*</span>
+						</label>
+						<g:textField name="fullName" required="" value="${userInstance?.fullName}"/>
+					</div>
+
+					<div class="fieldcontain ${hasErrors(bean: userInstance, field: 'nickname', 'error')} required">
+						<label for="nickname">
+							<g:message code="user.nickname.label" default="Nickname" />
+							<span class="required-indicator">*</span>
+						</label>
+						<g:textField name="nickname" required="" value="${userInstance?.nickname}"/>
+					</div>
 				</fieldset>
 				<fieldset class="buttons">
 					<g:actionSubmit class="save" action="update" value="${message(code: 'default.button.update.label', default: 'Update')}" />

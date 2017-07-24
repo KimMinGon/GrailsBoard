@@ -29,12 +29,15 @@ class BoardController {
 
     @Secured("hasRole('ROLE_USER')")
     def create() {
-        respond new Board()
+         respond new Board(params)
     }
 
     @Transactional
     @Secured("hasRole('ROLE_USER')")
     def save(Board boardInstance) {
+
+        boardInstance.user = springSecurityService.loadCurrentUser()
+
         if (boardInstance == null) {
             notFound()
             return
@@ -45,7 +48,6 @@ class BoardController {
             return
         }
 
-        boardInstance.user = springSecurityService.getCurrentUser()
 
         boardInstance.save(flush:true)
 
@@ -61,7 +63,7 @@ class BoardController {
     @Secured("hasRole('ROLE_USER')")
     def edit(Board boardInstance) {
 
-        if(boardInstance.user != springSecurityService.getCurrentUser()) {
+        if(boardInstance.user != springSecurityService.loadCurrentUser()) {
             notFound()
             return
         }
@@ -78,7 +80,7 @@ class BoardController {
             return
         }
 
-        if(boardInstance.user != springSecurityService.getCurrentUser()) {
+        if(boardInstance.user != springSecurityService.loadCurrentUser()) {
             notFound()
             return
         }
@@ -108,7 +110,7 @@ class BoardController {
             return
         }
 
-        if(boardInstance.user != springSecurityService.getCurrentUser()) {
+        if(boardInstance.user != springSecurityService.loadCurrentUser()) {
             notFound()
             return
         }

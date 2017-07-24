@@ -1,10 +1,11 @@
 package board
 
 class Board {
-    User user
     String subject
     String content
+    User user
     Date dateCreated
+
 
     static constraints = {
         content nullable: true

@@ -147,10 +147,13 @@ oauth {
             successUri = '/oauth/google/success'
             failureUri = '/oauth/google/error'
             callback = "${baseURL}/oauth/google/callback"
-            scope = 'https://www.googleapis.com/auth/userinfo.email'
+            scope = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
         }
+
+
     }
 }
+
 
 // Added by the Spring Security OAuth plugin:
 grails.plugin.springsecurity.oauth.domainClass = 'board.OAuthID'
